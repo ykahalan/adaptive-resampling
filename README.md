@@ -10,7 +10,7 @@ pip install adaptive-resampling
 ```
 
 # Example usage
-
+For detecting core and border points of a single class.
 ```py
 # Import the functions from the installed library
 from border_detection_minimal.border_detection_minimal import classify_border_and_core_points
@@ -25,7 +25,7 @@ border_points, core_points = classify_border_and_core_points(X, p=2, close=100, 
 print(f"Number of border points: {border_points.shape[0]}")
 print(f"Number of core points: {core_points.shape[0]}")
 ```
-
+For detecting core and border points of each class.
 ```py
 # Import the functions from the installed library
 from border_detection_minimal.border_detection_minimal import classify_border_and_core_points
