@@ -1,21 +1,20 @@
 This repo provides the implementation of the border and core detection as studied in our paper:
 
 # Installation
-
-The code can be installed from the repo directly as a package
-```
-pip install git+https://github.com/ykahalan/adaptive-resampling.git
-```
-Or it can be install as a python package from PyPI.
+The code can be installed as a python package from PyPI.
 ```
 pip install adaptive-resampling
+```
+Or it can be install from the github repo directly as a package.
+```
+pip install git+https://github.com/ykahalan/adaptive-resampling.git
 ```
 
 # Example usage
 For detecting core and border points of a single class.
 ```py
 # Import the functions from the installed library
-from border_detection_minimal.border_detection_minimal import classify_border_and_core_points
+from adaptive_resampling import classify_border_and_core_points
 
 # Generate random data points for the example (1000 points in 2D space)
 import numpy as np
@@ -30,7 +29,7 @@ print(f"Number of core points: {core_points.shape[0]}")
 For detecting core and border points of each class.
 ```py
 # Import the functions from the installed library
-from border_detection_minimal.border_detection_minimal import classify_border_and_core_points
+from adaptive_resampling import classify_border_and_core_points
 
 # Generate random data points for the example (1000 points in 2D space, with 3 classes)
 import numpy as np
