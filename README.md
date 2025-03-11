@@ -86,31 +86,43 @@ y = np.random.randint(0, 3, size=1000)  # Classes: 0, 1, 2
 # Classify border and core points for each class
 class_border_core = classify_border_and_core_points(X, y, p=2, close=100, percentile=60)
 
-# Initialize lists to hold resampled data
-X_resampled = []
-y_resampled = []
+# Separate border and core points
+border_points = []
+border_labels = []
+core_points = []
+core_labels = []
 
-# Iterate over each class to apply resampling strategies
-for cls, (border_points, core_points) in class_border_core.items():
-    # Prepare labels for border and core points
-    y_border = np.full(border_points.shape[0], cls)
-    y_core = np.full(core_points.shape[0], cls)
+for cls, (border, core) in class_border_core.items():
+    border_points.append(border)
+    border_labels.append(np.full(border.shape[0], cls))  # Store labels for border points
+    core_points.append(core)
+    core_labels.append(np.full(core.shape[0], cls))  # Store labels for core points
 
-    # Apply SMOTE to border points
+# Combine all border points and labels
+X_border_all = np.vstack(border_points)
+y_border_all = np.hstack(border_labels)
+
+# Combine all core points and labels
+X_core_all = np.vstack(core_points)
+y_core_all = np.hstack(core_labels)
+
+# Apply SMOTE to all border points across all classes
+if len(np.unique(y_border_all)) > 1:  # Ensure multiple classes exist
     smote = SMOTE(sampling_strategy='auto', random_state=42)
-    X_border_resampled, y_border_resampled = smote.fit_resample(border_points, y_border)
+    X_border_resampled, y_border_resampled = smote.fit_resample(X_border_all, y_border_all)
+else:
+    X_border_resampled, y_border_resampled = X_border_all, y_border_all  # Use original if SMOTE isn't possible
 
-    # Apply Random Undersampling to core points
-    rus = RandomUnderSampler(sampling_strategy=0.5, random_state=42)
-    X_core_resampled, y_core_resampled = rus.fit_resample(core_points, y_core)
+# Apply Random Undersampling (RUS) to all core points across all classes
+if len(np.unique(y_core_all)) > 1:  # Ensure multiple classes exist
+    rus = RandomUnderSampler(sampling_strategy='auto', random_state=42)
+    X_core_resampled, y_core_resampled = rus.fit_resample(X_core_all, y_core_all)
+else:
+    X_core_resampled, y_core_resampled = X_core_all, y_core_all  # Use original if RUS isn't possible
 
-    # Combine resampled border and core points
-    X_resampled.append(np.vstack((X_border_resampled, X_core_resampled)))
-    y_resampled.append(np.hstack((y_border_resampled, y_core_resampled)))
-
-# Concatenate all resampled data
-X_resampled = np.vstack(X_resampled)
-y_resampled = np.hstack(y_resampled)
+# Combine resampled border and core points
+X_resampled = np.vstack((X_border_resampled, X_core_resampled))
+y_resampled = np.hstack((y_border_resampled, y_core_resampled))
 
 # Display the class distribution before and after resampling
 print(f"Original class distribution: {Counter(y)}")
