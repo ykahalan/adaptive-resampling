@@ -1,10 +1,78 @@
 # border_detection_minimal.py
 
+# border_detection_optimized.py
+
 import numpy as np
+from sklearn.neighbors import NearestNeighbors
+
+def calculate_distances_close(X, p, close):
+    """
+    Efficiently calculates the average distance to the closest 'close' points for each point in the dataset.
+
+    Parameters:
+    X : np.ndarray
+        The dataset (n_samples, n_features).
+    p : int
+        The norm for the Minkowski distance.
+    close : int
+        The number of nearest points to consider.
+
+    Returns:
+    np.ndarray
+        Average distances array.
+    """
+    n_samples = X.shape[0]
+    if n_samples <= 1:
+        return np.zeros(n_samples)
+    
+    k_neighbors = min(close + 1, n_samples)
+    nn = NearestNeighbors(n_neighbors=k_neighbors, algorithm='auto', p=p)
+    nn.fit(X)
+    distances, _ = nn.kneighbors(X)
+    
+    if n_samples - 1 >= close:
+        neighbor_distances = distances[:, 1:close+1]
+    else:
+        neighbor_distances = distances[:, 1:]
+    
+    return np.mean(neighbor_distances, axis=1)
+
+def _classify_border_and_core_points(X, p=2, close=100, percentile=60):
+    """
+    Classifies points into border and core based on distance percentiles.
+
+    Parameters:
+    X : np.ndarray
+        Input dataset.
+    p : int
+        Minkowski distance parameter.
+    close : int
+        Number of closest neighbors considered.
+    percentile : float
+        Percentile threshold for classification.
+
+    Returns:
+    tuple of np.ndarray
+        Border and core points arrays.
+    """
+    distances = calculate_distances_close(X, p, close)
+    threshold = np.percentile(distances, percentile)
+    
+    border_mask = distances >= threshold
+    core_mask = ~border_mask
+    
+    border_points = X[border_mask]
+    core_points = X[core_mask]
+    
+    # Sorting by distances
+    border_points = border_points[np.argsort(-distances[border_mask])]
+    core_points = core_points[np.argsort(distances[core_mask])]
+    
+    return border_points, core_points
 
 def classify_border_and_core_points(X, y=None, p=2, close=100, percentile=60):
     """
-    Classify points as 'border' or 'core' based on distance percentile.
+    Classify points as 'border' or 'core' based on distance percentile, using efficient distance computation.
     
     Parameters:
     X : np.ndarray
@@ -24,43 +92,16 @@ def classify_border_and_core_points(X, y=None, p=2, close=100, percentile=60):
         If y is None, returns a tuple (border_points, core_points).
     """
     
-    def calculate_distances_close(x, p, close):
-        n_samples = x.shape[0]
-        distances = np.zeros(n_samples)
-
-        for i in range(n_samples):
-            dist_list = []
-            for j in range(n_samples):
-                if i != j:
-                    dist = np.linalg.norm(x[i] - x[j], ord=p)
-                    dist_list.append(dist)
-
-            dist_list.sort()
-            top_close_dists = dist_list[:close]
-            distances[i] = sum(top_close_dists) / close
-
-        return distances
-    
-    def process_class(X_class):
-        distances = calculate_distances_close(X_class, p, close)
-        threshold_distance = np.percentile(distances, percentile)
-
-        border_indices = np.where(distances >= threshold_distance)[0]
-        core_indices = np.where(distances < threshold_distance)[0]
-
-        border_indices = border_indices[np.argsort(-distances[border_indices])]
-        core_indices = core_indices[np.argsort(distances[core_indices])]
-
-        return X_class[border_indices], X_class[core_indices]
-
     if y is None:
-        return process_class(X)
-    
-    result = {}
+        return _classify_border_and_core_points(X)
+        
     unique_classes = np.unique(y)
+    class_border_core = {}
     
     for cls in unique_classes:
-        X_class = X[y == cls]
-        result[cls] = process_class(X_class)
+        mask = (y == cls)
+        X_cls = X[mask]
+        border, core = _classify_border_and_core_points(X_cls, p, close, percentile)
+        class_border_core[cls] = (border, core)
     
-    return result
+    return class_border_core
