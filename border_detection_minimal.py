@@ -1,7 +1,5 @@
 # border_detection_minimal.py
 
-# border_detection_optimized.py
-
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
