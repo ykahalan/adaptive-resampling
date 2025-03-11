@@ -27,11 +27,11 @@ def classify_border_and_core_points(X, y=None, p=2, close=100, percentile=60):
 # Installation
 The code can be installed as a python package from PyPI.
 ```
-pip install adaptive-resampling
+pip install adaptive_resampling
 ```
 Or it can be install from the github repo directly as a package.
 ```
-pip install git+https://github.com/ykahalan/adaptive-resampling.git
+pip install git+https://github.com/ykahalan/adaptive_resampling.git
 ```
 
 # Example usage
