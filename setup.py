@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="adaptive_resampling",
-    version="0.1.0",
+    version="0.1.1",
     author="Yunis Kahalan",
     author_email="ykahalan@gmail.com",
     description="A package for adaptive resampling of datasets using border detection.",
