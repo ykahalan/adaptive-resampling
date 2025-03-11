@@ -2,11 +2,11 @@ This repo provides the implementation of the border and core detection as studie
 
 # Installation
 
-Assuming you're in current directory run the following command.
+The code can be installed from the repo directly as a package
 ```
-pip install -e .
+pip install git+https://github.com/ykahalan/adaptive-resampling.git
 ```
-Or to install as a python package.
+Or it can be install as a python package from PyPI.
 ```
 pip install adaptive-resampling
 ```
