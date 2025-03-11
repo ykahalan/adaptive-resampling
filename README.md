@@ -1,4 +1,4 @@
-This repo provides an implementation of the border and core detection as studied in our paper:
+This repo provides the implementation of the border and core detection as studied in our paper:
 
 # Installation
 
