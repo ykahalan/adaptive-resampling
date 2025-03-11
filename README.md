@@ -1,7 +1,12 @@
 # Installation
+
 Assuming you're in current directory run the following command.
 ```
 pip install -e .
+```
+Or to install as a python package.
+```
+pip install adaptive-resampling
 ```
 
 # Example usage
