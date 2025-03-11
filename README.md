@@ -1,3 +1,5 @@
+This repo provides an implementation of the border and core detection as studied in our paper:
+
 # Installation
 
 Assuming you're in current directory run the following command.
