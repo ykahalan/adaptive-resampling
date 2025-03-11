@@ -46,7 +46,7 @@ for cls, (border, core) in class_border_core.items():
     print(f"  Number of border points: {border.shape[0]}")
     print(f"  Number of core points: {core.shape[0]}")
 ```
-For oversampling on the border and undersampling on the core as intended per the paper.
+For oversampling on the border and undersampling on the core as intended in the paper.
 ```py
 # Import necessary libraries
 import numpy as np
