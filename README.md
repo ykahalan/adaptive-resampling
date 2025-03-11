@@ -1,5 +1,29 @@
-This repo provides the implementation of the border and core detection as studied in our paper:
+This repo provides a single function which is the implementation of the border and core detection as studied in our paper:
 
+The border and core detection function has a prototype as follows.
+```py
+def classify_border_and_core_points(X, y=None, p=2, close=100, percentile=60):
+    """
+    Classify points as 'border' or 'core' based on distance percentile, using efficient distance computation.
+    
+    Parameters:
+    X : np.ndarray
+        The dataset (n_samples, n_features).
+    y : np.ndarray, optional
+        The class labels for the dataset (n_samples,). If None, the function treats all data as one class.
+    p : int
+        The norm to use for distance calculation (default is Euclidean norm, p=2).
+    close : int
+        The number of closest points to consider for the distance calculation (default=100).
+    percentile : float
+        The threshold percentile for defining border points (default=60).
+    
+    Returns:
+    result : dict or tuple
+        If y is provided, returns a dictionary with class labels as keys and (border_points, core_points) as values.
+        If y is None, returns a tuple (border_points, core_points).
+    """
+```
 # Installation
 The code can be installed as a python package from PyPI.
 ```
